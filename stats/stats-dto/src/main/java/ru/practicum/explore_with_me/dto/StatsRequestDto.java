@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class StatsDtoForSave {
+public class StatsRequestDto {
     private Long id;
     @NotBlank(message = "Имя приложения не должно быть пустым.")
     private String app;

@@ -1,23 +1,23 @@
 package ru.practicum.explore_with_me.mapper;
 
 import ru.practicum.explore_with_me.dto.StatWithHits;
+import ru.practicum.explore_with_me.dto.StatsRequestDto;
 import ru.practicum.explore_with_me.model.Stat;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import ru.practicum.explore_with_me.dto.StatsDtoForSave;
-import ru.practicum.explore_with_me.dto.StatsDtoForView;
+import ru.practicum.explore_with_me.dto.StatsResponseDto;
 
 @Mapper(componentModel = "spring")
 public interface StatMapper {
     @Mapping(source = "app", target = "app.app")
-    Stat mapFromSaveToModel(StatsDtoForSave statsDtoForSave);
+    Stat mapFromSaveToModel(StatsRequestDto statsRequestDto);
 
     @Mapping(source = "app.app", target = "app")
-    StatsDtoForSave mapToDtoForSave(Stat stat);
+    StatsRequestDto mapToDtoForSave(Stat stat);
 
     @Mapping(source = "app", target = "app")
-    StatWithHits mapFromViewToStatDto(StatsDtoForView statsDtoForView);
+    StatWithHits mapFromViewToStatDto(StatsResponseDto statsResponseDto);
 
     @Mapping(source = "app", target = "app")
-    StatsDtoForView mapToDtoForView(StatWithHits statDto);
+    StatsResponseDto mapToDtoForView(StatWithHits statDto);
 }
