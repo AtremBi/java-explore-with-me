@@ -242,7 +242,7 @@ public class EventService {
     }
 
     public EventFullDto getMyEventById(Long userId, Long eventId) {
-        Event event = getEventOrThrow(eventId, "Событие не найдено ID = %d, userId = "+ userId);
+        Event event = getEventOrThrow(eventId, "Событие не найдено ID = %d, userId = " + userId);
 
         List<Event> events = List.of(event);
         List<StatsResponseDto> stats = utilService.getViews(events);
@@ -372,7 +372,7 @@ public class EventService {
                 () -> new NotFoundRecordInBD(String.format(finalMessage, eventId)));
     }
 
-    private void checkStateAction (Event oldEvent, UpdateEventAdminRequest newEvent) {
+    private void checkStateAction(Event oldEvent, UpdateEventAdminRequest newEvent) {
 
         if (newEvent.getStateAction() == StateAction.PUBLISH_EVENT) {
             if (oldEvent.getEventState() != EventState.PENDING) {
@@ -399,7 +399,7 @@ public class EventService {
         }
     }
 
-    private Event updateEventsFieldsByAdmin (Event oldEvent, UpdateEventAdminRequest updateEvent) {
+    private Event updateEventsFieldsByAdmin(Event oldEvent, UpdateEventAdminRequest updateEvent) {
         if (updateEvent.getAnnotation() != null && !updateEvent.getAnnotation().isBlank()) {
             oldEvent.setAnnotation(updateEvent.getAnnotation());
         }

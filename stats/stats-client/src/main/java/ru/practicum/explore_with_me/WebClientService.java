@@ -11,6 +11,7 @@ import ru.practicum.explore_with_me.dto.StatsResponseDto;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+
 @Service
 public class WebClientService {
     protected final WebClient webClient;

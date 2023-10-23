@@ -22,9 +22,9 @@ public class StatsController {
     @GetMapping("/stats")
     @ResponseStatus(HttpStatus.OK)
     public List<StatsResponseDto> getStats(@RequestParam("start") LocalDateTime start,
-                                          @RequestParam("end") LocalDateTime end,
-                                          @RequestParam(value = "uris", required = false) List<String> uris,
-                                          @RequestParam(value = "unique", defaultValue = "false") boolean unique) {
+                                           @RequestParam("end") LocalDateTime end,
+                                           @RequestParam(value = "uris", required = false) List<String> uris,
+                                           @RequestParam(value = "unique", defaultValue = "false") boolean unique) {
         log.info("Получение статистики с {} по {} по эндпоинтам ({}). unique = {}.", start, end,
                 uris, unique);
         return statsService.getStats(start, end, uris, unique);

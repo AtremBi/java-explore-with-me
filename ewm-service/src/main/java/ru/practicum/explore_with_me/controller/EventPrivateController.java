@@ -29,7 +29,7 @@ public class EventPrivateController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public EventFullDto addEvent (@PathVariable("userId") @Positive Long userId,
+    public EventFullDto addEvent(@PathVariable("userId") @Positive Long userId,
                                  @Valid @RequestBody NewEventDto newEventDto) {
 
         log.info("POST /users/userId/events userId={}, newEvent = {}", userId, newEventDto);
@@ -38,7 +38,7 @@ public class EventPrivateController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<EventShortDto> getMyEvents (@PathVariable @Positive Long userId,
+    public List<EventShortDto> getMyEvents(@PathVariable @Positive Long userId,
                                            @PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
                                            @Positive @RequestParam(defaultValue = "10") Integer size) {
         log.info("GET event wit id = {}", userId);

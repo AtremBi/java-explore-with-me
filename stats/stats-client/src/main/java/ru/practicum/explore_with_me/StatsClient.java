@@ -48,7 +48,8 @@ public class StatsClient {
 
         String uri = statsServer + "/stats?start={start}&end={end}&{uris}&{unique}";
         log.info("GET STATS - {}", uri);
-        ParameterizedTypeReference<List<StatsResponseDto>> parTypeRef = new ParameterizedTypeReference<>() {};
+        ParameterizedTypeReference<List<StatsResponseDto>> parTypeRef = new ParameterizedTypeReference<>() {
+        };
         ResponseEntity<List<StatsResponseDto>> response = restTemplate.exchange(uri, HttpMethod.GET, requestEntity,
                 parTypeRef, uriVariables);
         log.info(response.toString());
