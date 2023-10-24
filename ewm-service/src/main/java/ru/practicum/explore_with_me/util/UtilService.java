@@ -99,7 +99,7 @@ public class UtilService {
         }
 
         for (Event event : events) {
-            if (confirmedRequests.get(event).isEmpty()) {
+            if (confirmedRequests.get(event) != null && confirmedRequests.get(event).isEmpty()) {
                 event.setConfirmedRequests(0);
             } else {
                 event.setConfirmedRequests(confirmedRequests.get(event).size());
