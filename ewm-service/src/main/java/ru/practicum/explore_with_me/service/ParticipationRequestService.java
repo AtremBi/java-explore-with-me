@@ -56,7 +56,7 @@ public class ParticipationRequestService {
         ParticipationRequest participationRequest = new ParticipationRequest();
         participationRequest.setRequester(userFromDb);
 
-        if(eventFromDb.getParticipantLimit().equals(0)){
+        if (eventFromDb.getParticipantLimit().equals(0)) {
             participationRequest.setStatusRequest(StatusRequest.CONFIRMED);
         } else if (eventFromDb.getRequestModeration()) {
             participationRequest.setStatusRequest(StatusRequest.PENDING);

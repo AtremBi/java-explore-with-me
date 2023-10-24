@@ -129,7 +129,7 @@ public class EventService {
                 .add(booleanBuilderForStates.getValue())
                 .buildAnd();
         List<Event> events;
-        if (filterForAll == null){
+        if (filterForAll == null) {
             events = eventRepository.findAll(pageable).toList();
         } else {
             events = eventRepository.findAll(filterForAll, pageable).toList();
@@ -154,7 +154,7 @@ public class EventService {
                 text, categoriesIds, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size);
         Sort sortForResponse;
 
-        if (rangeStart != null && !rangeStart.isBefore(rangeEnd)){
+        if (rangeStart != null && !rangeStart.isBefore(rangeEnd)) {
             throw new InvalidDateTimeException("rangeEnd не может быть меньше rangeStart");
         }
 
@@ -405,7 +405,7 @@ public class EventService {
 
 
         LocalDateTime now = LocalDateTime.now().plusHours(plusHours);
-        if (newEventDateTime.toLocalDate().isBefore(LocalDate.now())){
+        if (newEventDateTime.toLocalDate().isBefore(LocalDate.now())) {
             throw new InvalidDateTimeException("Нельзя выбрать уже наступившую дату");
         }
         if (now.isAfter(newEventDateTime)) {
