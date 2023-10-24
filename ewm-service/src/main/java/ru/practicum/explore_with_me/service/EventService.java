@@ -19,10 +19,7 @@ import ru.practicum.explore_with_me.dto.request.EventRequestStatusUpdateRequest;
 import ru.practicum.explore_with_me.dto.request.EventRequestStatusUpdateResult;
 import ru.practicum.explore_with_me.dto.request.ParticipationRequestDto;
 import ru.practicum.explore_with_me.dto.user.UserDto;
-import ru.practicum.explore_with_me.exception.InvalidSortException;
-import ru.practicum.explore_with_me.exception.NotFoundRecordInBD;
-import ru.practicum.explore_with_me.exception.OperationFailedException;
-import ru.practicum.explore_with_me.exception.StatsException;
+import ru.practicum.explore_with_me.exception.*;
 import ru.practicum.explore_with_me.mapper.EventMapper;
 import ru.practicum.explore_with_me.mapper.LocationMapper;
 import ru.practicum.explore_with_me.model.*;
@@ -31,6 +28,7 @@ import ru.practicum.explore_with_me.util.QPredicates;
 import ru.practicum.explore_with_me.util.UtilService;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -130,7 +128,12 @@ public class EventService {
                 .add(predicateForText)
                 .add(booleanBuilderForStates.getValue())
                 .buildAnd();
-        List<Event> events = eventRepository.findAll(filterForAll, pageable).toList();
+        List<Event> events;
+        if (filterForAll == null){
+            events = eventRepository.findAll(pageable).toList();
+        } else {
+            events = eventRepository.findAll(filterForAll, pageable).toList();
+        }
 
         List<StatsResponseDto> stats = utilService.getViews(events);
         events = utilService.fillViews(events, stats);
@@ -150,6 +153,10 @@ public class EventService {
                         "paid:{},rangeStart:{},rangeEnd:{},\nonlyAvailable:{},sort:{},from:{}, size:{}",
                 text, categoriesIds, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size);
         Sort sortForResponse;
+
+        if (rangeStart != null && !rangeStart.isBefore(rangeEnd)){
+            throw new InvalidDateTimeException("rangeEnd не может быть меньше rangeStart");
+        }
 
         if (sort == null || sort.isBlank() || sort.equalsIgnoreCase("EVENT_DATE")) {
             sortForResponse = Sort.by("eventDate").ascending();
@@ -227,6 +234,10 @@ public class EventService {
 
     public EventFullDto getEventById(Long eventId, HttpServletRequest httpServletRequest) {
         Event event = getEventOrThrow(eventId, "Не найдено событие ID = %d");
+
+        if (!event.getEventState().equals(EventState.PUBLISHED)) {
+            throw new NotFoundRecordInBD("Событие должно быть опубликовано");
+        }
 
         List<Event> events = List.of(event);
         List<StatsResponseDto> stats = utilService.getViews(events);
@@ -392,7 +403,11 @@ public class EventService {
 
     private void checkDateEvent(LocalDateTime newEventDateTime, int plusHours) {
 
+
         LocalDateTime now = LocalDateTime.now().plusHours(plusHours);
+        if (newEventDateTime.toLocalDate().isBefore(LocalDate.now())){
+            throw new InvalidDateTimeException("Нельзя выбрать уже наступившую дату");
+        }
         if (now.isAfter(newEventDateTime)) {
             throw new OperationFailedException(
                     String.format("Дата начала события, должна быть позже текущего момента на %s ч", plusHours));

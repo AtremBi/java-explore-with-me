@@ -10,6 +10,7 @@ import ru.practicum.explore_with_me.dto.event.UpdateEventAdminRequest;
 import ru.practicum.explore_with_me.model.EventState;
 import ru.practicum.explore_with_me.service.EventService;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
@@ -50,7 +51,7 @@ public class EventAdminController {
     @PatchMapping("/{eventId}")
     @ResponseStatus(HttpStatus.OK)
     public EventFullDto update(@PositiveOrZero @PathVariable Long eventId,
-                               @RequestBody UpdateEventAdminRequest updateEventAdminRequest) {
+                               @Valid @RequestBody UpdateEventAdminRequest updateEventAdminRequest) {
         log.info("PATCH /admin/events event id{}, {}", eventId,
                 updateEventAdminRequest);
         return eventService.updateEventAdmin(eventId, updateEventAdminRequest);

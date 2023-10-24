@@ -11,7 +11,6 @@ import ru.practicum.explore_with_me.service.UserService;
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
-import java.util.Collections;
 import java.util.List;
 
 @Validated
@@ -35,9 +34,6 @@ public class UserController {
                                  @PositiveOrZero @RequestParam(defaultValue = "0") int from,
                                  @Positive @RequestParam(defaultValue = "10") int size) {
         log.info("GET /admin/users. ids={}, from={}, size={}", ids, from, size);
-        if (ids == null || ids.isEmpty()) {
-            return Collections.emptyList();
-        }
         return userService.findByIds(ids, from, size);
     }
 

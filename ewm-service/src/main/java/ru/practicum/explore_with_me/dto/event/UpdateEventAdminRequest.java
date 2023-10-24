@@ -3,6 +3,7 @@ package ru.practicum.explore_with_me.dto.event;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.hibernate.validator.constraints.Length;
 import ru.practicum.explore_with_me.model.StateAction;
 
 import javax.persistence.Embedded;
@@ -12,8 +13,10 @@ import java.time.LocalDateTime;
 @Setter
 @RequiredArgsConstructor
 public class UpdateEventAdminRequest {
+    @Length(min = 20, max = 2000)
     private String annotation;
     private Long category;
+    @Length(min = 20, max = 7000)
     private String description;
     private LocalDateTime eventDate;
     @Embedded
@@ -22,5 +25,6 @@ public class UpdateEventAdminRequest {
     private Integer participantLimit;
     private Boolean requestModeration;
     private StateAction stateAction;
+    @Length(min = 3, max = 120)
     private String title;
 }

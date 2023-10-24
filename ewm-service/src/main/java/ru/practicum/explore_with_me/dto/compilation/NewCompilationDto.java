@@ -3,9 +3,9 @@ package ru.practicum.explore_with_me.dto.compilation;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 import java.util.List;
 
 @Getter
@@ -15,6 +15,6 @@ public class NewCompilationDto {
     private List<Long> events;
     private boolean pinned;
     @NotBlank
-    @Size(max = 200)
+    @Length(max = 50)
     private String title;
 }

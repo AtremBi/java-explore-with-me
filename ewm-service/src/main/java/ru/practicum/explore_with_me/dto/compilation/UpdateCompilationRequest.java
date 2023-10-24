@@ -1,8 +1,8 @@
 package ru.practicum.explore_with_me.dto.compilation;
 
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 
-import javax.validation.constraints.Size;
 import java.util.List;
 
 @Getter
@@ -13,6 +13,6 @@ import java.util.List;
 public class UpdateCompilationRequest {
     private List<Long> events;
     private Boolean pinned;
-    @Size(max = 200)
+    @Length(max = 50)
     private String title;
 }

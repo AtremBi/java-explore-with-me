@@ -4,9 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.validator.constraints.Length;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.NotBlank;
 
 @Getter
 @Setter
@@ -14,8 +14,7 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 public class CategoryDto {
     private Long id;
-    @NotNull
-    @Size(min = 1, max = 200)
-    @Size(min = 1, max = 200)
+    @Length(max = 50)
+    @NotBlank
     private String name;
 }
