@@ -4,6 +4,7 @@ import ru.practicum.explore_with_me.dto.StatWithHits;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ru.practicum.explore_with_me.dto.StatsResponseDto;
+import ru.practicum.explore_with_me.exceptions.InvalidDateTimeException;
 import ru.practicum.explore_with_me.mapper.StatMapper;
 import ru.practicum.explore_with_me.model.Application;
 import ru.practicum.explore_with_me.model.Stat;
@@ -34,6 +35,9 @@ public class StatsService {
 
     public List<StatsResponseDto> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, boolean unique) {
         List<StatWithHits> result;
+        if (start != null && end.isBefore(start)) {
+            throw new InvalidDateTimeException("rangeEnd не может быть меньше rangeStart");
+        }
         if (unique) {
             if (uris == null || uris.isEmpty()) {
                 log.info("Получение статистики: эндпоинтов нет, unique = true");
