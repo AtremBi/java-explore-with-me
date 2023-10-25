@@ -1,16 +1,16 @@
 package ru.practicum.explore_with_me.service;
 
-import ru.practicum.explore_with_me.dto.StatWithHits;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import ru.practicum.explore_with_me.dto.StatWithHits;
+import ru.practicum.explore_with_me.dto.StatsRequestDto;
 import ru.practicum.explore_with_me.dto.StatsResponseDto;
 import ru.practicum.explore_with_me.exceptions.InvalidDateTimeException;
 import ru.practicum.explore_with_me.mapper.StatMapper;
 import ru.practicum.explore_with_me.model.Application;
 import ru.practicum.explore_with_me.model.Stat;
-import org.springframework.stereotype.Service;
 import ru.practicum.explore_with_me.repository.StatRepository;
-import ru.practicum.explore_with_me.dto.StatsRequestDto;
 
 import java.time.LocalDateTime;
 import java.util.List;
