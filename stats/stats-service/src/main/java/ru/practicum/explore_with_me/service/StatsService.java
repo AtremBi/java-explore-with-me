@@ -34,7 +34,7 @@ public class StatsService {
 
     public List<StatsResponseDto> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, boolean unique) {
         List<StatWithHits> result;
-        if (start.isAfter(end)){
+        if (start.isAfter(end)) {
             throw new IllegalArgumentException("end не должен быть меньше start");
         }
         if (unique) {
