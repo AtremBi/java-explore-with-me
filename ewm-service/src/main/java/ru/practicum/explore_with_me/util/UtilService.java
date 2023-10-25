@@ -102,7 +102,9 @@ public class UtilService {
             if (confirmedRequests.get(event) != null && confirmedRequests.get(event).isEmpty()) {
                 event.setConfirmedRequests(0);
             } else {
-                event.setConfirmedRequests(confirmedRequests.get(event).size());
+                if(confirmedRequests.get(event) != null){
+                    event.setConfirmedRequests(confirmedRequests.get(event).size());
+                }
             }
         }
         return events;
