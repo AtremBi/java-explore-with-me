@@ -12,7 +12,7 @@ import ru.practicum.explore_with_me.dto.event.UpdateEventUserRequest;
 import ru.practicum.explore_with_me.dto.request.EventRequestStatusUpdateRequest;
 import ru.practicum.explore_with_me.dto.request.EventRequestStatusUpdateResult;
 import ru.practicum.explore_with_me.dto.request.ParticipationRequestDto;
-import ru.practicum.explore_with_me.service.EventService;
+import ru.practicum.explore_with_me.service.event.EventServiceImpl;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
@@ -25,7 +25,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Validated
 public class EventPrivateController {
-    private final EventService eventService;
+    private final EventServiceImpl eventService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)

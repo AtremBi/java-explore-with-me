@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore_with_me.dto.category.CategoryDto;
-import ru.practicum.explore_with_me.service.CategoryService;
+import ru.practicum.explore_with_me.service.category.CategoryServiceImpl;
 
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
@@ -18,7 +18,7 @@ import java.util.List;
 @RequestMapping("/categories")
 @Validated
 public class CategoryPubController {
-    private final CategoryService categoryService;
+    private final CategoryServiceImpl categoryService;
 
     @GetMapping("/{catId}")
     @ResponseStatus(HttpStatus.OK)

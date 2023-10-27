@@ -1,4 +1,4 @@
-package ru.practicum.explore_with_me.service;
+package ru.practicum.explore_with_me.service.compilation;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +14,7 @@ import ru.practicum.explore_with_me.dto.compilation.UpdateCompilationRequest;
 import ru.practicum.explore_with_me.dto.event.EventShortDto;
 import ru.practicum.explore_with_me.exception.NotFoundRecordInBD;
 import ru.practicum.explore_with_me.mapper.CompilationMapper;
-import ru.practicum.explore_with_me.mapper.CustomMapper;
+import ru.practicum.explore_with_me.mapper.CustomMapperForCompilation;
 import ru.practicum.explore_with_me.mapper.EventMapper;
 import ru.practicum.explore_with_me.model.Compilation;
 import ru.practicum.explore_with_me.model.Event;
@@ -29,13 +29,14 @@ import java.util.*;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Service
-public class CompilationService {
+public class CompilationServiceImpl implements CompilationService {
     private final CompilationRepository compilationRepository;
     private final CompilationMapper compilationMapper;
     private final EventRepository eventRepository;
     private final EventMapper eventMapper;
     private final UtilService utilService;
 
+    @Override
     @Transactional
     public CompilationDto addCompilation(NewCompilationDto newCompilationDto) {
         Compilation compilation = compilationMapper.mapFromNewDtoToModel(newCompilationDto);
@@ -59,12 +60,14 @@ public class CompilationService {
         return result;
     }
 
+    @Override
     @Transactional
     public void deleteCompilation(Long compId) {
         getCompilationOrThrow(compId, "Не найдена подборка ID = %d");
         compilationRepository.deleteById(compId);
     }
 
+    @Override
     @Transactional
     public CompilationDto updateCompilation(Long compId, UpdateCompilationRequest updateCompilationDto) {
         Compilation compilation = getCompilationOrThrow(compId,
@@ -92,9 +95,15 @@ public class CompilationService {
         return compilationMapper.mapToDto(compilation);
     }
 
+    @Override
     public List<CompilationDto> getCompilations(Boolean pinned, Integer from, Integer size) {
         Pageable pageable = PageRequest.of(from, size, Sort.by("id").ascending());
-        List<Compilation> compilations = compilationRepository.findAllByPinned(pinned, pageable);
+        List<Compilation> compilations;
+        if (pinned == null){
+            compilations = compilationRepository.findAll(pageable).getContent();
+        } else {
+            compilations = compilationRepository.findAllByPinned(pinned, pageable);
+        }
 
         Set<Event> events = new HashSet<>();
         for (Compilation compilation : compilations) {
@@ -111,7 +120,7 @@ public class CompilationService {
         List<CompilationDto> result = new ArrayList<>();
         for (Compilation c : compilations) {
             List<EventShortDto> eventArrayList = new ArrayList<>();
-            CompilationDto compilationDto = CustomMapper.mapFromNewDtoToModel(c);
+            CompilationDto compilationDto = CustomMapperForCompilation.mapFromNewDtoToModel(c);
             compilationDto.setEvents(new ArrayList<>());
             Set<Event> eventSet = c.getEvents();
             for (Event ev : eventSet) {
@@ -127,6 +136,7 @@ public class CompilationService {
         return result;
     }
 
+    @Override
     public CompilationDto getCompilationById(Long compId) {
         Compilation compilation = getCompilationOrThrow(compId,
                 "Не найдена подборка ID = %d");

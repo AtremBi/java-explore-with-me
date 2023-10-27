@@ -1,4 +1,4 @@
-package ru.practicum.explore_with_me.service;
+package ru.practicum.explore_with_me.service.user;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
 @Transactional(readOnly = true)
-public class UserService {
+public class UserServiceImpl {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 

@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class CustomMapper {
+public class CustomMapperForCompilation {
     public static CompilationDto mapFromNewDtoToModel(Compilation compilation) {
         List<EventShortDto> eventShortDtoList = new ArrayList<>();
         for (Event event : compilation.getEvents()) {

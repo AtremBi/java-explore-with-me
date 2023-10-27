@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore_with_me.dto.compilation.CompilationDto;
 import ru.practicum.explore_with_me.dto.compilation.NewCompilationDto;
 import ru.practicum.explore_with_me.dto.compilation.UpdateCompilationRequest;
-import ru.practicum.explore_with_me.service.CompilationService;
+import ru.practicum.explore_with_me.service.compilation.CompilationServiceImpl;
 
 import javax.validation.Valid;
 
@@ -16,7 +16,7 @@ import javax.validation.Valid;
 @RequestMapping("/admin/compilations")
 @RequiredArgsConstructor
 public class CompilationAdminController {
-    private final CompilationService compilationService;
+    private final CompilationServiceImpl compilationService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)

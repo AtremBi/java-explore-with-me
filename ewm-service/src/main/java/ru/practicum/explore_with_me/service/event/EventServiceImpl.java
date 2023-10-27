@@ -1,4 +1,4 @@
-package ru.practicum.explore_with_me.service;
+package ru.practicum.explore_with_me.service.event;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
@@ -24,6 +24,9 @@ import ru.practicum.explore_with_me.mapper.EventMapper;
 import ru.practicum.explore_with_me.mapper.LocationMapper;
 import ru.practicum.explore_with_me.model.*;
 import ru.practicum.explore_with_me.repository.EventRepository;
+import ru.practicum.explore_with_me.service.request.ParticipationRequestServiceImpl;
+import ru.practicum.explore_with_me.service.user.UserServiceImpl;
+import ru.practicum.explore_with_me.service.category.CategoryServiceImpl;
 import ru.practicum.explore_with_me.util.QPredicates;
 import ru.practicum.explore_with_me.util.UtilService;
 
@@ -41,18 +44,19 @@ import static ru.practicum.explore_with_me.model.QEvent.event;
 @Service
 @RequiredArgsConstructor
 @Import({WebClientService.class})
-public class EventService {
+public class EventServiceImpl implements EventService {
 
     private final EventMapper eventMapper;
-    private final UserService userService;
+    private final UserServiceImpl userService;
     private final EventRepository eventRepository;
-    private final CategoryService categoryService;
+    private final CategoryServiceImpl categoryService;
     private final UtilService utilService;
     private final WebClientService statsClient;
-    private final ParticipationRequestService participationRequestService;
+    private final ParticipationRequestServiceImpl participationRequestService;
     private final LocationMapper locationMapper;
     private static final String nameApp = "ewm-service";
 
+    @Override
     @Transactional
     public EventFullDto create(Long userId, NewEventDto newEventDto) {
         User initiator = userService.getUserOrThrow(userId,
@@ -74,6 +78,11 @@ public class EventService {
         return result;
     }
 
+    public Event findEventByCategory(Category category){
+        return eventRepository.findByCategory(category);
+    }
+
+    @Override
     public List<EventShortDto> getMyEvents(Long userId, Integer from, Integer size) {
         UserDto userFromDb = userService.check(userId, "Не найден пользователь = {}");
         Pageable pageable = PageRequest.of(from, size, Sort.by("id").ascending());
@@ -86,6 +95,7 @@ public class EventService {
         return result;
     }
 
+    @Override
     public List<EventFullDto> getEventsForAdmin(List<Long> userIds, List<EventState> states, List<Long> categories,
                                                 LocalDateTime rangeStart, LocalDateTime rangeEnd, String text,
                                                 Integer from, Integer size) {
@@ -144,6 +154,7 @@ public class EventService {
         return eventMapper.mapFromModelListToFullDtoList(events);
     }
 
+    @Override
     public List<EventShortDto> getEventsForAll(String text, List<Long> categoriesIds, Boolean paid,
                                                LocalDateTime rangeStart, LocalDateTime rangeEnd,
                                                Boolean onlyAvailable, String sort,
@@ -214,6 +225,7 @@ public class EventService {
         return eventMapper.mapFromModelListToShortDtoList(events);
     }
 
+    @Override
     public EventFullDto updateEventAdmin(Long eventId, UpdateEventAdminRequest updateEventAdminRequest) {
         Event eventFromDb = getEventOrThrow(eventId, "Не найдено событие ID = %d");
         checkStateAction(eventFromDb, updateEventAdminRequest);
@@ -232,6 +244,7 @@ public class EventService {
         return eventMapper.mapFromModelToFullDto(result);
     }
 
+    @Override
     public EventFullDto getEventById(Long eventId, HttpServletRequest httpServletRequest) {
         Event event = getEventOrThrow(eventId, "Не найдено событие ID = %d");
 
@@ -240,18 +253,19 @@ public class EventService {
         }
 
         List<Event> events = List.of(event);
+        statsClient.save(nameApp, httpServletRequest.getRequestURI(),
+                httpServletRequest.getRemoteAddr(), LocalDateTime.now());
         List<StatsResponseDto> stats = utilService.getViews(events);
         events = utilService.fillViews(events, stats);
 
         Map<Event, List<ParticipationRequest>> confirmedRequests = utilService.prepareConfirmedRequest(events);
         events = utilService.fillConfirmedRequests(events, confirmedRequests);
         Event result = events.get(0);
-        statsClient.save(nameApp, httpServletRequest.getRequestURI(),
-                httpServletRequest.getRemoteAddr(), LocalDateTime.now());
         log.info("getEventById ID = {}", eventId);
         return eventMapper.mapFromModelToFullDto(result);
     }
 
+    @Override
     public EventFullDto getMyEventById(Long userId, Long eventId) {
         Event event = getEventOrThrow(eventId, "Событие не найдено ID = %d, userId = " + userId);
 
@@ -266,6 +280,7 @@ public class EventService {
         return eventMapper.mapFromModelToFullDto(result);
     }
 
+    @Override
     public EventFullDto updateEventUser(Long userId, Long eventId, UpdateEventUserRequest updateEventUserRequest) {
         User userFromDb = userService.getUserOrThrow(userId,
                 "Не найден пользователь ID = {}");
@@ -301,6 +316,7 @@ public class EventService {
         return eventMapper.mapFromModelToFullDto(result);
     }
 
+    @Override
     public List<ParticipationRequestDto> getRequestsEvent(Long userId, Long eventId) {
         List<ParticipationRequestDto> result;
         userService.getUserOrThrow(userId,
@@ -310,6 +326,7 @@ public class EventService {
         return result;
     }
 
+    @Override
     public EventFullDto publish(Long eventId) {
         Event eventFromDb = getEventOrThrow(eventId, "Событие не найдено");
 
@@ -326,6 +343,7 @@ public class EventService {
         return eventMapper.mapFromModelToFullDto(saved);
     }
 
+    @Override
     public EventRequestStatusUpdateResult updateRequestStatus(Long userId, Long eventId,
                                                               EventRequestStatusUpdateRequest eventRequestStatusUpdateRequest) {
         userService.getUserOrThrow(userId,
@@ -367,6 +385,7 @@ public class EventService {
         return result;
     }
 
+
     private boolean checkParticipantLimit(Event event) {
         if (event.getParticipantLimit() - event.getConfirmedRequests() > 0) {
             return true;
@@ -374,6 +393,7 @@ public class EventService {
         return false;
     }
 
+    @Override
     public Event getEventOrThrow(Long eventId, String message) {
         if (message == null || message.isBlank()) {
             message = "Не найдено событие ID = %d";

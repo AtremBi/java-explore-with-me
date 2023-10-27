@@ -1,4 +1,4 @@
-package ru.practicum.explore_with_me.service;
+package ru.practicum.explore_with_me.service.request;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +11,7 @@ import ru.practicum.explore_with_me.mapper.ParticipationRequestMapper;
 import ru.practicum.explore_with_me.model.*;
 import ru.practicum.explore_with_me.repository.EventRepository;
 import ru.practicum.explore_with_me.repository.ParticipationRequestRepository;
+import ru.practicum.explore_with_me.service.user.UserServiceImpl;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,14 +22,15 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ParticipationRequestService {
+public class ParticipationRequestServiceImpl implements ParticipationRequestService {
 
     private final ParticipationRequestRepository participationRequestRepository;
 
-    private final UserService userService;
+    private final UserServiceImpl userService;
     private final ParticipationRequestMapper requestMapper;
     private final EventRepository eventRepository;
 
+    @Override
     public ParticipationRequestDto create(Long userId, Long eventId) {
         User userFromDb = userService.getUserOrThrow(userId, "Не найден пользователь ID = %d");
         Event eventFromDb = getEventOrThrow(eventId, "Не найдено событие ID = %d");
@@ -71,6 +73,7 @@ public class ParticipationRequestService {
         return requestMapper.mapToDto(participationRequest);
     }
 
+    @Override
     public List<ParticipationRequestDto> getRequestsByUserId(Long userId) {
         userService.getUserOrThrow(userId, "getRequestsByUserId не найден пользователь ID = %d");
         List<ParticipationRequestDto> result = participationRequestRepository.findAllByRequesterIdOrderByIdAsc(userId).stream()
@@ -79,6 +82,7 @@ public class ParticipationRequestService {
         return result;
     }
 
+    @Override
     public ParticipationRequestDto cancelRequest(Long userId, Long requestId) {
         userService.check(userId, "Не найден пользователь ID = %d");
         getEventOrThrow(requestId, "Не найдено событие ID = %d");
@@ -93,6 +97,7 @@ public class ParticipationRequestService {
         return requestMapper.mapToDto(participationRequest);
     }
 
+    @Override
     public List<ParticipationRequestDto> findRequestByIds(List<Long> requestIds) {
         List<ParticipationRequest> result = participationRequestRepository.findByIdInOrderByIdAsc(requestIds);
         List<ParticipationRequestDto> requestDtos = requestMapper.mapListToDtoList(result);
@@ -100,11 +105,13 @@ public class ParticipationRequestService {
         return requestDtos;
     }
 
+    @Override
     public List<ParticipationRequestDto> getRequestsForEvent(Long eventId) {
         List<ParticipationRequest> result = participationRequestRepository.findAllByEvent_Id(eventId);
         return requestMapper.mapListToDtoList(result);
     }
 
+    @Override
     @Transactional
     public ParticipationRequestDto updateRequest(Long idRequest, StatusRequest status) {
         Optional<ParticipationRequest> request = participationRequestRepository.findById(idRequest);

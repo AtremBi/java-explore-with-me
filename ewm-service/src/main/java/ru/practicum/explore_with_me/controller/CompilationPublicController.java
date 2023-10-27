@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore_with_me.dto.compilation.CompilationDto;
-import ru.practicum.explore_with_me.service.CompilationService;
+import ru.practicum.explore_with_me.service.compilation.CompilationServiceImpl;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
@@ -20,7 +20,7 @@ import java.util.List;
 @Validated
 public class CompilationPublicController {
 
-    private final CompilationService compilationService;
+    private final CompilationServiceImpl compilationService;
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)

@@ -6,7 +6,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore_with_me.dto.event.EventFullDto;
 import ru.practicum.explore_with_me.dto.event.EventShortDto;
-import ru.practicum.explore_with_me.service.EventService;
+import ru.practicum.explore_with_me.service.event.EventServiceImpl;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Positive;
@@ -20,7 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Validated
 public class EventPublicController {
-    private final EventService eventService;
+    private final EventServiceImpl eventService;
 
     @GetMapping
     public List<EventShortDto> findByFilter(HttpServletRequest httpServletRequest,

@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore_with_me.dto.request.ParticipationRequestDto;
-import ru.practicum.explore_with_me.service.ParticipationRequestService;
+import ru.practicum.explore_with_me.service.request.ParticipationRequestServiceImpl;
 
 import javax.validation.constraints.Positive;
 import java.util.List;
@@ -17,7 +17,7 @@ import java.util.List;
 @RequestMapping("/users/{userId}/requests")
 @Validated
 public class ParticipationRequestController {
-    private final ParticipationRequestService participationRequestService;
+    private final ParticipationRequestServiceImpl participationRequestService;
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)

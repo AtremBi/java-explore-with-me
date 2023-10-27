@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore_with_me.dto.event.EventFullDto;
 import ru.practicum.explore_with_me.dto.event.UpdateEventAdminRequest;
 import ru.practicum.explore_with_me.model.EventState;
-import ru.practicum.explore_with_me.service.EventService;
+import ru.practicum.explore_with_me.service.event.EventServiceImpl;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
@@ -22,7 +22,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Validated
 public class EventAdminController {
-    private final EventService eventService;
+    private final EventServiceImpl eventService;
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
