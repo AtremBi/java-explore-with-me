@@ -99,7 +99,7 @@ public class CompilationServiceImpl implements CompilationService {
     public List<CompilationDto> getCompilations(Boolean pinned, Integer from, Integer size) {
         Pageable pageable = PageRequest.of(from, size, Sort.by("id").ascending());
         List<Compilation> compilations;
-        if (pinned == null){
+        if (pinned == null) {
             compilations = compilationRepository.findAll(pageable).getContent();
         } else {
             compilations = compilationRepository.findAllByPinned(pinned, pageable);

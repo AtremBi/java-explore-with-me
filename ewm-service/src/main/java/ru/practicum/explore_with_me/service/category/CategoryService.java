@@ -17,5 +17,5 @@ public interface CategoryService {
 
     void delete(Long catId);
 
-    Category getCatOrThrow(Long catId,String message);
+    Category getCatOrThrow(Long catId, String message);
 }

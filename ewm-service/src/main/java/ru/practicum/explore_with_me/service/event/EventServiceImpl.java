@@ -78,7 +78,7 @@ public class EventServiceImpl implements EventService {
         return result;
     }
 
-    public Event findEventByCategory(Category category){
+    public Event findEventByCategory(Category category) {
         return eventRepository.findByCategory(category);
     }
 
