@@ -2,13 +2,12 @@ package ru.practicum.explore_with_me.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore_with_me.dto.event.EventFullDto;
 import ru.practicum.explore_with_me.dto.event.UpdateEventAdminRequest;
 import ru.practicum.explore_with_me.model.EventState;
-import ru.practicum.explore_with_me.service.event.EventServiceImpl;
+import ru.practicum.explore_with_me.service.event.EventService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
@@ -22,10 +21,9 @@ import java.util.List;
 @RequiredArgsConstructor
 @Validated
 public class EventAdminController {
-    private final EventServiceImpl eventService;
+    private final EventService eventService;
 
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
     public List<EventFullDto> getEventsForAdmin(@RequestParam(required = false) List<Long> users,
                                                 @RequestParam(required = false) List<EventState> states,
                                                 @RequestParam(required = false) List<Long> categories,
@@ -42,14 +40,12 @@ public class EventAdminController {
     }
 
     @PatchMapping("/{eventId}/publish")
-    @ResponseStatus(HttpStatus.OK)
     public EventFullDto publishEvent(@Positive @PathVariable Long eventId) {
         log.info("PATCH publishEvent id = {}", eventId);
         return eventService.publish(eventId);
     }
 
     @PatchMapping("/{eventId}")
-    @ResponseStatus(HttpStatus.OK)
     public EventFullDto update(@PositiveOrZero @PathVariable Long eventId,
                                @Valid @RequestBody UpdateEventAdminRequest updateEventAdminRequest) {
         log.info("PATCH /admin/events event id{}, {}", eventId,

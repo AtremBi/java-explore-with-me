@@ -2,11 +2,10 @@ package ru.practicum.explore_with_me.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore_with_me.dto.compilation.CompilationDto;
-import ru.practicum.explore_with_me.service.compilation.CompilationServiceImpl;
+import ru.practicum.explore_with_me.service.compilation.CompilationService;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
@@ -20,10 +19,9 @@ import java.util.List;
 @Validated
 public class CompilationPublicController {
 
-    private final CompilationServiceImpl compilationService;
+    private final CompilationService compilationService;
 
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
     public List<CompilationDto> getCompilations(@RequestParam(required = false) boolean pinned,
                                                 @PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
                                                 @Positive @RequestParam(defaultValue = "10") Integer size) {
@@ -32,7 +30,6 @@ public class CompilationPublicController {
     }
 
     @GetMapping("/{compId}")
-    @ResponseStatus(HttpStatus.OK)
     public CompilationDto getCompilationById(@NotNull @PositiveOrZero @PathVariable Long compId) {
         log.info("GET /compilations compId {}", compId);
         return compilationService.getCompilationById(compId);

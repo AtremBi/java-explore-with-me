@@ -1,7 +1,6 @@
 package ru.practicum.explore_with_me.service.category;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -12,12 +11,10 @@ import ru.practicum.explore_with_me.exception.NotFoundRecordInBD;
 import ru.practicum.explore_with_me.mapper.CategoryMapper;
 import ru.practicum.explore_with_me.model.Category;
 import ru.practicum.explore_with_me.repository.CategoryRepository;
-import ru.practicum.explore_with_me.service.event.EventServiceImpl;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-//@RequiredArgsConstructor
 @Slf4j
 @Service
 @Transactional(readOnly = true)
@@ -25,14 +22,9 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
     private final CategoryMapper categoryMapper;
 
-    @Lazy
-    private final EventServiceImpl eventService;
-
-    public CategoryServiceImpl(CategoryRepository categoryRepository, CategoryMapper categoryMapper,
-                               @Lazy EventServiceImpl eventService) {
+    public CategoryServiceImpl(CategoryRepository categoryRepository, CategoryMapper categoryMapper) {
         this.categoryRepository = categoryRepository;
         this.categoryMapper = categoryMapper;
-        this.eventService = eventService;
     }
 
     @Override
@@ -86,15 +78,5 @@ public class CategoryServiceImpl implements CategoryService {
         log.info("catDelete ID = {}, name = {}", catId, oldCategory.getName());
     }
 
-    @Override
-    public Category getCatOrThrow(Long catId, String message) {
-        if (message == null || message.isBlank()) {
-            message = "Не найдена категория с ID = %d";
-        }
-        String finalMessage = message;
-
-        return categoryRepository.findById(catId).orElseThrow(
-                () -> new NotFoundRecordInBD(String.format(finalMessage, catId)));
-    }
 }
 

@@ -22,11 +22,12 @@ import ru.practicum.explore_with_me.dto.user.UserDto;
 import ru.practicum.explore_with_me.exception.*;
 import ru.practicum.explore_with_me.mapper.EventMapper;
 import ru.practicum.explore_with_me.mapper.LocationMapper;
+import ru.practicum.explore_with_me.mapper.UserMapper;
 import ru.practicum.explore_with_me.model.*;
+import ru.practicum.explore_with_me.repository.CategoryRepository;
 import ru.practicum.explore_with_me.repository.EventRepository;
-import ru.practicum.explore_with_me.service.request.ParticipationRequestServiceImpl;
-import ru.practicum.explore_with_me.service.user.UserServiceImpl;
-import ru.practicum.explore_with_me.service.category.CategoryServiceImpl;
+import ru.practicum.explore_with_me.repository.UserRepository;
+import ru.practicum.explore_with_me.service.request.ParticipationRequestService;
 import ru.practicum.explore_with_me.util.QPredicates;
 import ru.practicum.explore_with_me.util.UtilService;
 
@@ -47,21 +48,22 @@ import static ru.practicum.explore_with_me.model.QEvent.event;
 public class EventServiceImpl implements EventService {
 
     private final EventMapper eventMapper;
-    private final UserServiceImpl userService;
+    private final UserRepository userRepository;
     private final EventRepository eventRepository;
-    private final CategoryServiceImpl categoryService;
+    private final CategoryRepository categoryRepository;
     private final UtilService utilService;
+    private final UserMapper userMapper;
     private final WebClientService statsClient;
-    private final ParticipationRequestServiceImpl participationRequestService;
+    private final ParticipationRequestService participationRequestService;
     private final LocationMapper locationMapper;
     private static final String nameApp = "ewm-service";
 
     @Override
     @Transactional
     public EventFullDto create(Long userId, NewEventDto newEventDto) {
-        User initiator = userService.getUserOrThrow(userId,
+        User initiator = getUserOrThrow(userId,
                 "Не найден пользователь ID = {}");
-        Category category = categoryService.getCatOrThrow(newEventDto.getCategoryId(),
+        Category category = getCatOrThrow(newEventDto.getCategoryId(),
                 "Не найдена категория ID = {}");
 
         checkDateEvent(newEventDto.getEventDate(), 2);
@@ -78,13 +80,9 @@ public class EventServiceImpl implements EventService {
         return result;
     }
 
-    public Event findEventByCategory(Category category) {
-        return eventRepository.findByCategory(category);
-    }
-
     @Override
     public List<EventShortDto> getMyEvents(Long userId, Integer from, Integer size) {
-        UserDto userFromDb = userService.check(userId, "Не найден пользователь = {}");
+        UserDto userFromDb = userMapper.mapToUserDto(getUserOrThrow(userId, "Не найден пользователь = {}"));
         Pageable pageable = PageRequest.of(from, size, Sort.by("id").ascending());
 
         Predicate predicate = event.initiator.id.ne(userId);
@@ -282,11 +280,11 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public EventFullDto updateEventUser(Long userId, Long eventId, UpdateEventUserRequest updateEventUserRequest) {
-        User userFromDb = userService.getUserOrThrow(userId,
+        User userFromDb = getUserOrThrow(userId,
                 "Не найден пользователь ID = {}");
         Event eventFromDb = getEventOrThrow(eventId, "Событие не найдено");
         if (updateEventUserRequest.getCategory() != null) {
-            categoryService.getCatOrThrow(updateEventUserRequest.getCategory(),
+            getCatOrThrow(updateEventUserRequest.getCategory(),
                     "Не найдена категория ID = {}");
         }
 
@@ -319,8 +317,7 @@ public class EventServiceImpl implements EventService {
     @Override
     public List<ParticipationRequestDto> getRequestsEvent(Long userId, Long eventId) {
         List<ParticipationRequestDto> result;
-        userService.getUserOrThrow(userId,
-                "Не найден пользователь ID = %d");
+        getUserOrThrow(userId, "Не найден пользователь ID = %d");
         getEventOrThrow(eventId, "Событие не найдено");
         result = participationRequestService.getRequestsForEvent(eventId);
         return result;
@@ -346,8 +343,7 @@ public class EventServiceImpl implements EventService {
     @Override
     public EventRequestStatusUpdateResult updateRequestStatus(Long userId, Long eventId,
                                                               EventRequestStatusUpdateRequest eventRequestStatusUpdateRequest) {
-        userService.getUserOrThrow(userId,
-                "Не найден пользователь с ID = %d");
+        getUserOrThrow(userId, "Не найден пользователь с ID = %d");
         Event eventFromDb = getEventOrThrow(eventId, "Событие не найдено");
 
         List<Event> events = setViewsAndConfirmedRequests(List.of(eventFromDb));
@@ -393,14 +389,33 @@ public class EventServiceImpl implements EventService {
         return false;
     }
 
-    @Override
-    public Event getEventOrThrow(Long eventId, String message) {
+    private Event getEventOrThrow(Long eventId, String message) {
         if (message == null || message.isBlank()) {
             message = "Не найдено событие ID = %d";
         }
         String finalMessage = message;
         return eventRepository.findById(eventId).orElseThrow(
                 () -> new NotFoundRecordInBD(String.format(finalMessage, eventId)));
+    }
+
+    private User getUserOrThrow(Long userId, String message) {
+        if (message == null || message.isBlank()) {
+            message = "Не найден пользователь с ID = %d";
+        }
+        String finalMessage = message;
+
+        return userRepository.findById(userId).orElseThrow(
+                () -> new NotFoundRecordInBD(String.format(finalMessage, userId)));
+    }
+
+    private Category getCatOrThrow(Long catId, String message) {
+        if (message == null || message.isBlank()) {
+            message = "Не найдена категория с ID = %d";
+        }
+        String finalMessage = message;
+
+        return categoryRepository.findById(catId).orElseThrow(
+                () -> new NotFoundRecordInBD(String.format(finalMessage, catId)));
     }
 
     private void checkStateAction(Event oldEvent, UpdateEventAdminRequest newEvent) {
@@ -517,7 +532,6 @@ public class EventServiceImpl implements EventService {
         }
         return oldEvent;
     }
-
 
     private List<Event> setViewsAndConfirmedRequests(List<Event> events) {
         List<StatsResponseDto> stats = utilService.getViews(events);

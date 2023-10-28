@@ -20,10 +20,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
 @Transactional(readOnly = true)
-public class UserServiceImpl {
+public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
+    @Override
     public List<UserDto> findByIds(List<Long> ids, int from, int size) {
         Pageable pageable = PageRequest.of(from, size, Sort.by("id").ascending());
         List<User> users;
@@ -35,7 +36,7 @@ public class UserServiceImpl {
         return users.stream()
                 .map(userMapper::mapToUserDto).collect(Collectors.toList());
     }
-
+    @Override
     public UserDto check(Long userId, String message) {
         if (message == null || message.isBlank()) {
             message = "Не найден пользователь ID = %d";
@@ -47,7 +48,7 @@ public class UserServiceImpl {
 
         return userMapper.mapToUserDto(user);
     }
-
+    @Override
     @Transactional
     public UserDto save(UserDto userDto) {
         User newUser = userMapper.mapToUser(userDto);
@@ -57,6 +58,7 @@ public class UserServiceImpl {
         return result;
     }
 
+    @Override
     @Transactional
     public void delete(Long userId) {
         UserDto oldUser = check(userId, "Пользователь ID = %d не найден");
@@ -64,13 +66,4 @@ public class UserServiceImpl {
         log.info("Удален пользователь ID = {} name = {}", userId, oldUser.getName());
     }
 
-    public User getUserOrThrow(Long userId, String message) {
-        if (message == null || message.isBlank()) {
-            message = "Не найден пользователь с ID = %d";
-        }
-        String finalMessage = message;
-
-        return userRepository.findById(userId).orElseThrow(
-                () -> new NotFoundRecordInBD(String.format(finalMessage, userId)));
-    }
 }

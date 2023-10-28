@@ -1,6 +1,5 @@
 package ru.practicum.explore_with_me.service.request;
 
-import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.explore_with_me.dto.request.ParticipationRequestDto;
 import ru.practicum.explore_with_me.model.StatusRequest;
 
@@ -18,7 +17,6 @@ public interface ParticipationRequestService {
 
     List<ParticipationRequestDto> findRequestByIds(List<Long> ids);
 
-    @Transactional
     ParticipationRequestDto updateRequest(Long idRequest, StatusRequest status);
 
 }

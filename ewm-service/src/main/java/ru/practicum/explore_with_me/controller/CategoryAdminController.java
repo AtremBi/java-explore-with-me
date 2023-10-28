@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore_with_me.dto.category.CategoryDto;
-import ru.practicum.explore_with_me.service.category.CategoryServiceImpl;
+import ru.practicum.explore_with_me.service.category.CategoryService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.PositiveOrZero;
@@ -17,7 +17,7 @@ import javax.validation.constraints.PositiveOrZero;
 @Validated
 @RequestMapping("/admin/categories")
 public class CategoryAdminController {
-    private final CategoryServiceImpl categoryService;
+    private final CategoryService categoryService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -27,7 +27,6 @@ public class CategoryAdminController {
     }
 
     @PatchMapping("/{catId}")
-    @ResponseStatus(HttpStatus.OK)
     public CategoryDto updateCategory(@PositiveOrZero @PathVariable Long catId,
                                       @Valid @RequestBody CategoryDto categoryDto) {
         log.info("PATCH /admin/categories/catId={}, categoryDto={}", catId, categoryDto);

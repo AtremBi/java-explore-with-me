@@ -1,7 +1,6 @@
 package ru.practicum.explore_with_me.service.category;
 
 import ru.practicum.explore_with_me.dto.category.CategoryDto;
-import ru.practicum.explore_with_me.model.Category;
 
 import java.util.List;
 
@@ -17,5 +16,4 @@ public interface CategoryService {
 
     void delete(Long catId);
 
-    Category getCatOrThrow(Long catId, String message);
 }

@@ -12,7 +12,7 @@ import ru.practicum.explore_with_me.dto.event.UpdateEventUserRequest;
 import ru.practicum.explore_with_me.dto.request.EventRequestStatusUpdateRequest;
 import ru.practicum.explore_with_me.dto.request.EventRequestStatusUpdateResult;
 import ru.practicum.explore_with_me.dto.request.ParticipationRequestDto;
-import ru.practicum.explore_with_me.service.event.EventServiceImpl;
+import ru.practicum.explore_with_me.service.event.EventService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
@@ -25,7 +25,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Validated
 public class EventPrivateController {
-    private final EventServiceImpl eventService;
+    private final EventService eventService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -37,7 +37,6 @@ public class EventPrivateController {
     }
 
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
     public List<EventShortDto> getMyEvents(@PathVariable @Positive Long userId,
                                            @PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
                                            @Positive @RequestParam(defaultValue = "10") Integer size) {
@@ -46,7 +45,6 @@ public class EventPrivateController {
     }
 
     @GetMapping("/{eventId}")
-    @ResponseStatus(HttpStatus.OK)
     public EventFullDto getEventById(@PathVariable("userId") @Positive Long userId,
                                      @PathVariable("eventId") @Positive Long eventId) {
         log.info("GET /users/{userId}/events/{eventId}: userId = {}, eventId = {}", userId, eventId);
@@ -55,7 +53,6 @@ public class EventPrivateController {
     }
 
     @PatchMapping("/{eventId}")
-    @ResponseStatus(HttpStatus.OK)
     public EventFullDto updateEvent(@PathVariable @Positive Long userId,
                                     @PathVariable @Positive Long eventId,
                                     @RequestBody @Valid UpdateEventUserRequest updateEventUserRequest) {
@@ -65,7 +62,6 @@ public class EventPrivateController {
     }
 
     @GetMapping("/{eventId}/requests")
-    @ResponseStatus(HttpStatus.OK)
     public List<ParticipationRequestDto> getRequestsOld(@PathVariable @Positive Long userId,
                                                         @PathVariable @Positive Long eventId) {
         log.info("GET /users/{userId}/events//{eventId}/requests userId {}, eventId {}", userId, eventId);
@@ -73,7 +69,6 @@ public class EventPrivateController {
     }
 
     @PatchMapping("/{eventId}/requests")
-    @ResponseStatus(HttpStatus.OK)
     public EventRequestStatusUpdateResult updateRequestsStatus(@Positive @PathVariable Long userId,
                                                                @Positive @PathVariable Long eventId,
                                                                @Valid @RequestBody EventRequestStatusUpdateRequest

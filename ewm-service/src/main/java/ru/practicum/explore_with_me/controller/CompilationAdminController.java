@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore_with_me.dto.compilation.CompilationDto;
 import ru.practicum.explore_with_me.dto.compilation.NewCompilationDto;
 import ru.practicum.explore_with_me.dto.compilation.UpdateCompilationRequest;
-import ru.practicum.explore_with_me.service.compilation.CompilationServiceImpl;
+import ru.practicum.explore_with_me.service.compilation.CompilationService;
 
 import javax.validation.Valid;
 
@@ -16,7 +16,7 @@ import javax.validation.Valid;
 @RequestMapping("/admin/compilations")
 @RequiredArgsConstructor
 public class CompilationAdminController {
-    private final CompilationServiceImpl compilationService;
+    private final CompilationService compilationService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -34,7 +34,6 @@ public class CompilationAdminController {
 
 
     @PatchMapping("/{compId}")
-    @ResponseStatus(HttpStatus.OK)
     public CompilationDto update(@PathVariable Long compId,
                                  @RequestBody @Valid UpdateCompilationRequest updateCompilationRequest) {
         log.info("PATCH /admin/compilations compId {}, {}", compId, updateCompilationRequest);

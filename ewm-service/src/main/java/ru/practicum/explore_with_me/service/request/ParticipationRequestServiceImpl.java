@@ -11,7 +11,7 @@ import ru.practicum.explore_with_me.mapper.ParticipationRequestMapper;
 import ru.practicum.explore_with_me.model.*;
 import ru.practicum.explore_with_me.repository.EventRepository;
 import ru.practicum.explore_with_me.repository.ParticipationRequestRepository;
-import ru.practicum.explore_with_me.service.user.UserServiceImpl;
+import ru.practicum.explore_with_me.repository.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,14 +25,13 @@ import java.util.stream.Collectors;
 public class ParticipationRequestServiceImpl implements ParticipationRequestService {
 
     private final ParticipationRequestRepository participationRequestRepository;
-
-    private final UserServiceImpl userService;
+    private final UserRepository userRepository;
     private final ParticipationRequestMapper requestMapper;
     private final EventRepository eventRepository;
 
     @Override
     public ParticipationRequestDto create(Long userId, Long eventId) {
-        User userFromDb = userService.getUserOrThrow(userId, "Не найден пользователь ID = %d");
+        User userFromDb = getUserOrThrow(userId, "Не найден пользователь ID = %d");
         Event eventFromDb = getEventOrThrow(eventId, "Не найдено событие ID = %d");
         if (userId.equals(eventFromDb.getInitiator().getId())) {
             throw new OperationFailedException(String.format("Инициатор с ID = %d события не может создать " +
@@ -75,7 +74,7 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
 
     @Override
     public List<ParticipationRequestDto> getRequestsByUserId(Long userId) {
-        userService.getUserOrThrow(userId, "getRequestsByUserId не найден пользователь ID = %d");
+        getUserOrThrow(userId, "не найден пользователь ID = %d");
         List<ParticipationRequestDto> result = participationRequestRepository.findAllByRequesterIdOrderByIdAsc(userId).stream()
                 .map(requestMapper::mapToDto).collect(Collectors.toList());
         log.info("Выдан ответ на запрос участия пользователя ID = {} в чужих событиях", userId);
@@ -84,7 +83,7 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
 
     @Override
     public ParticipationRequestDto cancelRequest(Long userId, Long requestId) {
-        userService.check(userId, "Не найден пользователь ID = %d");
+        getUserOrThrow(userId, "не найден пользователь ID = %d");
         getEventOrThrow(requestId, "Не найдено событие ID = %d");
         ParticipationRequest participationRequest = participationRequestRepository.findById(requestId)
                 .orElseThrow(() -> new NotFoundRecordInBD(String.format("Не найдена заявка ID = %d", requestId)));
@@ -121,6 +120,16 @@ public class ParticipationRequestServiceImpl implements ParticipationRequestServ
             result = participationRequestRepository.save(request.get());
         }
         return requestMapper.mapToDto(result);
+    }
+
+    private User getUserOrThrow(Long userId, String message) {
+        if (message == null || message.isBlank()) {
+            message = "Не найден пользователь с ID = %d";
+        }
+        String finalMessage = message;
+
+        return userRepository.findById(userId).orElseThrow(
+                () -> new NotFoundRecordInBD(String.format(finalMessage, userId)));
     }
 
     private Event getEventOrThrow(Long eventId, String message) {
