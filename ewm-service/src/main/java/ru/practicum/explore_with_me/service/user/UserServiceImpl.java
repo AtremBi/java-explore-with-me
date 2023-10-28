@@ -36,6 +36,7 @@ public class UserServiceImpl implements UserService {
         return users.stream()
                 .map(userMapper::mapToUserDto).collect(Collectors.toList());
     }
+
     @Override
     public UserDto check(Long userId, String message) {
         if (message == null || message.isBlank()) {
@@ -48,6 +49,7 @@ public class UserServiceImpl implements UserService {
 
         return userMapper.mapToUserDto(user);
     }
+
     @Override
     @Transactional
     public UserDto save(UserDto userDto) {
