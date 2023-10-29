@@ -1,4 +1,4 @@
-package ru.practicum.explore_with_me.dto;
+package ru.practicum.explore_with_me.dto.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,8 +9,7 @@ import lombok.Setter;
 @Setter
 @RequiredArgsConstructor
 @AllArgsConstructor
-public class StatsResponseDto {
-    private String app;
-    private String uri;
-    private Integer hits;
+public class UserShortDto {
+    private Long id;
+    private String name;
 }
