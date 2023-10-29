@@ -6,7 +6,6 @@ import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 import ru.practicum.explore_with_me.model.StateAction;
 
-import javax.persistence.Embedded;
 import java.time.LocalDateTime;
 
 @Getter
@@ -19,7 +18,6 @@ public class UpdateEventAdminRequest {
     @Length(min = 20, max = 7000)
     private String description;
     private LocalDateTime eventDate;
-    @Embedded
     private LocationDto location;
     private Boolean paid;
     private Integer participantLimit;
