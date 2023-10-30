@@ -60,7 +60,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentForView getCommentById(Long userId, Long comId) {
-        getUserOrThrow(userId, "Не найден пользователь с ID = %d");
+        checkUserOrThrow(userId, "Не найден пользователь с ID = %d");
         Comment commentFromDb = getCommentOrThrow(comId, "Комментарий не найден ID = %d");
         Event eventFromDb = getEventOrThrow(commentFromDb.getEvent().getId(), "Не найдено событие %d");
         if (!eventFromDb.getEventState().equals(EventState.PUBLISHED)) {
@@ -77,7 +77,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public void deleteCommentByUser(Long comId, Long userId) {
-        getUserOrThrow(userId, "Не найден пользователь с ID = %d");
+        checkUserOrThrow(userId, "Не найден пользователь с ID = %d");
         Comment commentFromDb = getCommentOrThrow(comId, "Комментарий не найден с ID = %d");
         if (checkAuthorComment(commentFromDb, userId)) {
             commentRepository.deleteById(comId);
@@ -173,6 +173,16 @@ public class CommentServiceImpl implements CommentService {
 
         return userRepository.findById(userId).orElseThrow(
                 () -> new NotFoundRecordInBD(String.format(finalMessage, userId)));
+    }
+
+    private void checkUserOrThrow(Long userId, String message) {
+        if (message == null || message.isBlank()) {
+            message = "Не найден пользователь с ID = %d";
+        }
+
+        if (!userRepository.existsById(userId)){
+            throw new NotFoundRecordInBD(String.format(message, userId));
+        }
     }
 
     @Override

@@ -12,5 +12,5 @@ import java.util.List;
 @RequiredArgsConstructor
 @AllArgsConstructor
 public class CommentEventRequest {
-    List<Long> ids;
+    private List<Long> ids;
 }

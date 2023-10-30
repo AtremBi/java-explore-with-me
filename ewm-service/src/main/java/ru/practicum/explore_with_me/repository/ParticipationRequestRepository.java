@@ -8,16 +8,16 @@ import java.util.List;
 
 public interface ParticipationRequestRepository extends JpaRepository<ParticipationRequest, Long> {
 
-    @Query("select p from ParticipationRequest p where p.requester.id = ?1 order by p.id")
+    @Query("select p from ParticipationRequest p where p.requester.id = :userId order by p.id")
     List<ParticipationRequest> findAllByRequesterIdOrderByIdAsc(Long userId);
 
-    @Query("select count(p) from ParticipationRequest p where p.requester.id = ?1 and p.event.id = ?2")
+    @Query("select count(p) from ParticipationRequest p where p.requester.id = :userId and p.event.id = :eventId")
     int countAllByRequester_IdAndEvent_Id(Long userId, Long eventId);
 
-    @Query("select p from ParticipationRequest p where p.event.id = ?1 and p.statusRequest = 'CONFIRMED'")
+    @Query("select p from ParticipationRequest p where p.event.id = :eventId and p.statusRequest = 'CONFIRMED'")
     List<ParticipationRequest> findConfirmedRequests(Long eventId);
 
-    @Query("select p from ParticipationRequest p where p.statusRequest = 'CONFIRMED' and p.event.id in ?1")
+    @Query("select p from ParticipationRequest p where p.statusRequest = 'CONFIRMED' and p.event.id in :ids")
     List<ParticipationRequest> findConfirmedRequests(List<Long> ids);
 
     List<ParticipationRequest> findByIdInOrderByIdAsc(List<Long> requestIds);

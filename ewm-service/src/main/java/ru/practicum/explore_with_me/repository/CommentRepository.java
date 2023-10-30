@@ -9,13 +9,13 @@ import ru.practicum.explore_with_me.model.Comment;
 import java.util.List;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
-    @Query("select count(c) from Comment c where c.event.id = ?1")
+    @Query("select count(c) from Comment c where c.event.id = :id")
     Long countCommentsForEvent(Long id);
 
     List<Comment> findAllByEvent_Id(Long id, Pageable pageable);
 
     @Query("select new ru.practicum.explore_with_me.dto.comment.CommentEvent(c.event.id, count(c))" +
-            " from Comment c where c.event.id in ?1 group by c.event.id")
+            " from Comment c where c.event.id in :eventIds group by c.event.id")
     List<CommentEvent> getCommentsEvents(List<Long> eventIds);
 
 }
