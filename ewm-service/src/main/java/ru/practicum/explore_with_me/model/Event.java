@@ -21,7 +21,7 @@ public class Event {
     private Long id;
     @Column(name = "annotation", length = 2000)
     private String annotation;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cat_id")
     private Category category;
     @Column(name = "created_on", nullable = false)
@@ -31,7 +31,7 @@ public class Event {
     @Column(name = "event_date")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "initiator_id", nullable = false)
     private User initiator;
     @Embedded
