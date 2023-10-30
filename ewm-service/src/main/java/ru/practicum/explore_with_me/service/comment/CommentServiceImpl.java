@@ -180,7 +180,7 @@ public class CommentServiceImpl implements CommentService {
             message = "Не найден пользователь с ID = %d";
         }
 
-        if (!userRepository.existsById(userId)){
+        if (!userRepository.existsById(userId)) {
             throw new NotFoundRecordInBD(String.format(message, userId));
         }
     }
