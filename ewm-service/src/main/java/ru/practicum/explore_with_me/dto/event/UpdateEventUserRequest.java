@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.practicum.explore_with_me.model.StateAction;
 
-import javax.persistence.Embedded;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
@@ -22,7 +21,6 @@ public class UpdateEventUserRequest {
     private String description;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;
-    @Embedded
     private LocationDto location;
     private Boolean paid;
     @PositiveOrZero

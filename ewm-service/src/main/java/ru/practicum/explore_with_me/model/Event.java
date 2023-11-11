@@ -31,7 +31,7 @@ public class Event {
     @Column(name = "event_date")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "initiator_id", nullable = false)
     private User initiator;
     @Embedded
@@ -55,4 +55,6 @@ public class Event {
     private Integer confirmedRequests;
     @Transient
     private Integer views;
+    @Transient
+    private Long comments;
 }

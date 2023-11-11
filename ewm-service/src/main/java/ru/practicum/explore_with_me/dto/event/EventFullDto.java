@@ -8,7 +8,7 @@ import ru.practicum.explore_with_me.dto.category.CategoryDto;
 import ru.practicum.explore_with_me.dto.user.UserShortDto;
 import ru.practicum.explore_with_me.model.EventState;
 
-import javax.persistence.Embedded;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Getter
@@ -23,7 +23,7 @@ public class EventFullDto {
     private String description;
     private LocalDateTime eventDate;
     private UserShortDto initiator;
-    @Embedded
+    @NotNull
     private LocationDto location;
     private Boolean paid;
     private Integer participantLimit;
@@ -33,4 +33,5 @@ public class EventFullDto {
     private EventState eventState;
     private String title;
     private Integer views;
+    private Long comments;
 }
